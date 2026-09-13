@@ -1,0 +1,49 @@
+# ============================================================
+# MATERIAL DEL INSTRUCTOR. NUNCA DEBE LLEGAR A ESTE REPOSITORIO
+# ============================================================
+# Este repositorio es público. Los archivos de abajo contienen las
+# respuestas de los ejercicios. Si alguno se publica, el laboratorio
+# que sostiene deja de funcionar.
+
+# Claves con las respuestas de los laboratorios
+Clave_instructor*
+clave_instructor*
+*clave-instructor*
+CLAVE_*
+
+# Guiones de conducción
+Guion_Sesion_*
+guion_sesion_*
+*guion-instructor*
+
+# Versión completa del archivo de registros: trae la hoja
+# Clave_instructor con el tema real de los 118 registros.
+# Al repositorio solo va la versión _PARTICIPANTE.
+Registros_atencion_ciudadana_sintetico.xlsx
+
+# Carpeta de trabajo del instructor
+instructor-NO-SUBIR/
+instructor/
+privado/
+
+# ============================================================
+# Archivos temporales y de sistema
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+*.tmp
+*.bak
+
+# Salidas de conversión y renders de revisión
+*.pdf.tmp
+render/
+*.jpg
+*.jpeg
+*.png
+!docs/**/*.png
+
+# Node, por si se usan los scripts de generación
+node_modules/
+package-lock.json
