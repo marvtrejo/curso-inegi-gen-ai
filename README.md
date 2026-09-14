@@ -68,7 +68,7 @@ Microsoft 365 Copilot es la herramienta base. Las demás se usan para que conozc
 ## Contenido del repositorio
 
 ```
-temario/               El temario detallado de las sesiones 1 a 6
+temario/               El temario detallado y el documento de herramientas por bloque
 formatos/              Plantillas que se usan durante todo el curso
 proyecto-integrador/   Definición, rutas, entregables y rúbrica del proyecto
 sesion-01/             Mazo, handout y materiales de la sesión 1
@@ -78,6 +78,10 @@ sesion-04/             Mazo y materiales de la sesión 4
 sesion-05/             Mazo y materiales de la sesión 5
 sesion-06/             Mazo y materiales de la sesión 6
 ```
+
+### Qué herramienta se usa en cada módulo
+
+El documento `temario/Herramientas_por_bloque.docx` fija, de manera formal y por bloque, qué herramientas se usan en cada módulo, en qué modalidad y con qué fundamento. Usa las categorías de la Lista de verificación de acceso que elaboró el propio INEGI. Si tienes dudas sobre qué abrir en qué sesión, ese es el documento que manda.
 
 ### El handout de cada sesión
 

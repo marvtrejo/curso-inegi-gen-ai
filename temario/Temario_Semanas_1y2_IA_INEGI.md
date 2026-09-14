@@ -62,6 +62,8 @@ En la sesión 1 cada participante aprende a construir una versión enmascarada d
 
 ## 3. Herramientas de este bloque
 
+El detalle formal y por módulo de qué herramienta se usa dónde y con qué fundamento está en el documento `Herramientas_por_bloque.docx`, que usa la clasificación por categorías de la Lista de verificación de acceso elaborada por el propio Instituto. Lo que sigue es el resumen aplicable a las sesiones 1 a 6.
+
 El Instituto habilitó el acceso de red de los participantes a ocho herramientas. Solo una de ellas está cubierta por un contrato institucional, y esa diferencia decide qué información se puede procesar en cada una.
 
 ### Microsoft 365 Copilot, la base institucional
@@ -352,56 +354,62 @@ Tres conjuntos de reglas de operación públicas, un archivo con cien a ciento v
 
 ---
 
-## Sesión 5. Plataformas especializadas en análisis cualitativo con IA
+## Sesión 5. Plataformas de análisis cualitativo con IA
 
 **Lunes 21 de septiembre, 9:00 a 11:30 horas.**
 
-Esta es la sesión que responde directamente a lo solicitado por el área usuaria sobre la revisión del ecosistema de herramientas. Combina práctica con lo que sí abre desde la red y exposición demostrada con lo que está bloqueado.
+Esta sesión cubre los tres puntos que el anexo II.5 compromete: integración de plataformas de análisis cualitativo asistido por IA, codificación temática automática y análisis de postura en programas sociales, y evaluación de complementariedad de herramientas cualitativas frente a Copilot.
+
+No se empieza de cero. Se trabaja sobre el corpus de registros de atención ciudadana de la sesión 4 y sobre el libro de códigos que cada equipo ratificó el viernes.
 
 ### Lo que se busca en esta sesión
 
-Que cada participante pueda decidir con criterio qué herramienta conviene para cada tarea, y que sepa argumentar con evidencia si vale la pena solicitar la liberación de alguna herramienta bloqueada.
+Que cada equipo pueda decir, con evidencia de uso propio, en qué es mejor y en qué es peor su herramienta asignada frente a Copilot para una tarea cualitativa concreta. Y que salga con el borrador de un argumento real de contratación o solicitud.
+
+### Las categorías son las del Instituto
+
+El mapa del ecosistema usa la clasificación de la Lista de verificación de acceso que elaboró el propio INEGI: asistentes generales, búsqueda e investigación, agregadores, productividad e investigación, código, modelos y chat, investigación académica, imagen y diseño, presentaciones, y video.
+
+Eso permite reportar con precisión qué cubre el curso de esa lista: quince herramientas en ejercicio y cuatro más por demostración, de las treinta y una que contiene. El detalle por módulo está en el documento `Herramientas_por_bloque.docx`.
 
 ### Desarrollo de la sesión
 
-**Mapa del ecosistema, de 9:00 a 9:20.**
-Se presenta el ecosistema organizado por tarea y no por marca, que es la única forma de que el mapa siga siendo útil dentro de seis meses. Las categorías son asistentes generales, búsqueda con fuentes, análisis de documentos con citas, análisis cualitativo especializado, investigación académica, y generación de código.
+**Mapa del ecosistema, de 9:00 a 9:15.**
+Se presentan las tres preguntas de la sesión y el mapa con las categorías del Instituto. La regla de lectura es por tarea y no por marca, porque las marcas cambian y las tareas no.
 
-Sobre ese mapa se coloca el resultado de la verificación de acceso que hizo la institución, de manera que quede claro qué está disponible hoy y qué no.
+**El reparto por equipos, de 9:15 a 9:25.**
+Los seis equipos se dividen en dos mitades que corresponden a los dos pasos de cualquier análisis cualitativo.
 
-**Práctica con las herramientas que sí abren, de 9:20 a 10:05.**
-Se toma una sola pregunta de evaluación y se responde con cuatro herramientas distintas, para que la comparación sea directa.
+Los equipos 1 a 3 trabajan con asistentes generales, que son ChatGPT, Claude y Gemini. Su tarea es codificar: aplicar el libro de códigos ratificado sobre el corpus de 118 registros, clasificar postura y causa raíz sobre las transcripciones de foro, y comparar registro por registro contra lo que dio Copilot.
 
-* Con **Copilot** se trabaja sobre documentos institucionales alojados en SharePoint.
-* Con **ChatGPT** se hace la verificación cruzada del resultado anterior y se prueba el manejo de archivos largos.
-* Con **Elicit** y **Consensus** se busca literatura académica sobre la efectividad del tipo de intervención que se está evaluando, y se revisa si las referencias existen de verdad.
-* Con **You.com** se hace búsqueda web con fuentes.
+Los equipos 4 a 6 trabajan con herramientas de búsqueda e investigación académica, que son Perplexity y You.com para el cuarto, Elicit para el quinto y Consensus para el sexto. Su tarea es sustentar: tomar un hallazgo de la codificación, buscar si la evidencia lo sostiene o lo contradice, verificar que las referencias existan, y comparar contra Copilot.
 
-Cada participante registra en su cuadro comparativo qué le dio cada herramienta y cuánto tiempo le tomó.
+El reparto no es arbitrario. Las herramientas de búsqueda no sirven para codificar un corpus, porque son de otra categoría. Ponerlas a hacerlo las haría quedar mal por una razón equivocada.
+
+**Práctica por equipos, de 9:25 a 10:10.**
+Quince minutos con Copilot, que es el punto de comparación común de todos, y veinticinco con la herramienta asignada sobre el mismo material. Los últimos cinco minutos se destinan a llenar el cuadro comparativo y preparar la presentación.
 
 **Receso de 10 minutos.**
 
-**Sesión demostrativa de herramientas bloqueadas, de 10:15 a 11:00.**
-El instructor ejecuta en vivo, desde un equipo fuera de la red institucional, la misma tarea que los participantes acaban de hacer, usando las herramientas que no abren desde el INEGI.
+**Puesta en común, de 10:20 a 10:50.**
+Cinco minutos por equipo. La presentación responde cuatro cosas: qué hizo mejor que Copilot, qué hizo peor, qué pide a cambio en cuenta, costo y aprendizaje, y para qué tarea concreta de esta área se recomendaría. No es una demostración de la herramienta, es un dictamen sobre ella.
 
-Se demuestra **NotebookLM** cargando varios documentos y mostrando cómo responde con citas señaladas al párrafo exacto, que es su ventaja principal. Se demuestra **Claude** con un documento largo, para mostrar la diferencia práctica que hace una ventana de contexto grande cuando hay que analizar un informe completo sin partirlo. Se demuestra **Perplexity** para búsqueda con fuentes verificables. Se demuestran las funciones de IA de **Atlas.ti** y **MAXQDA**, que son el estándar en investigación cualitativa formal, mostrando la codificación asistida y la generación de reportes de codificación.
+**Demostración, de 10:50 a 11:10.**
+Atlas.ti y MAXQDA, que son el estándar de la investigación cualitativa formal y requieren licencia de paga, y NotebookLM, que está bloqueada en la red institucional. Las tres resuelven el mismo problema: dejar constancia de cómo se llegó al resultado.
 
-Cada demostración cierra con tres datos concretos: qué hace mejor que Copilot, cuánto cuesta la licencia, y qué tipo de información se podría procesar ahí según el semáforo de datos.
+Estas tres se cubren por exposición conforme a lo indicado por la coordinación del Instituto, que señaló que las herramientas no disponibles desde la infraestructura institucional pueden abordarse mediante sesiones expositivas realizadas por los instructores.
 
-**Cómo armar un ambiente de trabajo institucional con lo que ya se tiene, de 11:00 a 11:20.**
-Esta parte es la respuesta práctica al problema de las herramientas bloqueadas. Se muestra cómo organizar una carpeta de SharePoint como base documental y hacer que Copilot trabaje anclado a ella, de manera que se obtenga buena parte del beneficio de una herramienta de recuperación documental sin salir del ambiente institucional. Se cubre la organización de carpetas, la nomenclatura de archivos y la forma de formular las preguntas para que Copilot busque en el lugar correcto.
+**El RAG institucional, de 11:10 a 11:25.**
+Cómo organizar una carpeta de SharePoint como base documental y hacer que Copilot trabaje anclado a ella. Es la versión operable hoy de lo que hace NotebookLM, y es lo único de la sesión que funciona con información interna de trabajo.
 
-**Cierre y llenado del cuadro comparativo, de 11:20 a 11:30.**
+### Entregables de la sesión 5
 
-### Entregable de la sesión 5
-
-El cuadro comparativo del ecosistema, con estas columnas: tarea, herramienta, qué hace bien, qué hace mal, tipo de dato que admite según el semáforo, si está disponible en el INEGI, y recomendación de uso. Se pide además una justificación escrita de una cuartilla sobre cuál herramienta bloqueada valdría la pena solicitar y por qué.
+* El cuadro comparativo consolidado, con las ocho herramientas evaluadas por uso propio de los seis equipos.
+* Una cuartilla por equipo sobre cuál herramienta valdría la pena contratar o solicitar, con costo estimado y para qué tarea.
 
 ### Materiales que prepara el instructor
 
-Un equipo fuera de la red institucional con las herramientas bloqueadas listas y con el mismo caso ya cargado, la plantilla del cuadro comparativo, y una carpeta de SharePoint de ejemplo ya organizada.
-
----
+Atlas.ti o MAXQDA con un proyecto de ejemplo ya codificado, que es lo único que requiere preparación con tiempo. Los costos de licencia de las herramientas que se demuestran, porque sin cifras las presentaciones de equipo no cierran.
 
 ## Sesión 6. Laboratorio cualitativo aplicado a casos reales del INEGI
 
