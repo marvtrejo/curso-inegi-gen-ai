@@ -33,6 +33,7 @@ privado/
 Thumbs.db
 desktop.ini
 ~$*
+.~lock.*
 *.tmp
 *.bak
 
