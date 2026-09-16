@@ -20,4 +20,8 @@ No se parecen, a propósito. Uno define a su población por edad y nada más; ot
 
 Si una liga llegara a fallar, el título exacto del acuerdo basta para volver a encontrarla en dof.gob.mx.
 
+## ¿Y el informe de la Práctica A?
+
+La Práctica A pide un informe de evaluación público, el que tú elijas. El acervo natural es el del CONEVAL: [Evaluaciones y resultados de programas](https://www.coneval.org.mx/Evaluacion/Paginas/Evaluaciones-y-resultados-de-programas.aspx), con evaluaciones descargables desde 2007 y buscador por programa. Baja la de un programa que conozcas y tenla en PDF antes de la sesión.
+
 Ligas verificadas el 15 de septiembre de 2026. Estos documentos son obra del Gobierno de México publicada en el DOF; no los cubre la licencia del curso.
