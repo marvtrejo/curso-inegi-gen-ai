@@ -68,7 +68,9 @@ El Instituto habilitó el acceso de red de los participantes a ocho herramientas
 
 ### Microsoft 365 Copilot, la base institucional
 
-Es la única con contrato del Instituto y por lo tanto la única donde se puede trabajar con información interna de trabajo. Los participantes cuentan con la versión que accede a datos de trabajo, es decir, la que puede leer archivos de SharePoint y correos de Outlook. Esa versión es la que sostiene las prácticas de las sesiones 2, 4 y 5.
+Es la única con contrato del Instituto y por lo tanto la única donde se puede trabajar con información interna de trabajo.
+
+**Ajuste del 15 de septiembre, comprobado en vivo durante la sesión 2.** En la infraestructura del Instituto, Copilot no aparece dentro de Word, Excel, Outlook ni Teams. Lo que está disponible es Copilot Chat con la cuenta institucional, que queda dentro del contrato, lee los archivos de OneDrive del participante y admite documentos adjuntos. Toda práctica que este temario describa como «Copilot en Word» o «Copilot dentro de Excel» se ajustó para correr en Copilot Chat con el archivo adjunto; los mazos y handouts publicados ya reflejan el cambio. La regla amarilla del semáforo se lee así: información interna de trabajo, solo en Copilot Chat con la cuenta del Instituto.
 
 ### Las siete restantes, con plan gratuito
 
@@ -251,7 +253,7 @@ Se presenta el protocolo que se va a usar durante el resto del curso.
 1. **Trazar.** Cada afirmación del texto generado debe poder señalar el documento y la sección de donde salió. Lo que no se puede trazar se marca y se investiga aparte.
 2. **Recalcular.** Toda cifra se comprueba a mano o en Excel. Se revisa especialmente que los porcentajes sumen lo que deben sumar y que los totales cuadren con sus partes.
 3. **Contrapreguntar.** Se le regresa la pregunta al modelo pidiéndole que señale qué parte del documento sostiene cada afirmación. Cuando no puede señalarla, casi siempre es porque la inventó.
-4. **Cruzar.** Se hace la misma pregunta en una segunda herramienta, que en el caso del INEGI será ChatGPT porque es la otra que abre desde la red, y se comparan las dos respuestas. Cuando difieren, se va a la fuente original.
+4. **Triangular.** Se hace la misma pregunta en dos herramientas más; en el caso del INEGI abren desde la red ChatGPT, Claude y Gemini. Si las respuestas coinciden, la confianza sube; cuando difieren, esa discrepancia dice exactamente dónde ir a la fuente original. (En una versión anterior de este temario el paso se llamaba «Cruzar» y usaba una sola herramienta de contraste; los materiales publicados usan «Triangular».)
 
 Se practica cada paso sobre un fragmento corto antes de pasar al laboratorio.
 
@@ -322,7 +324,7 @@ Cada participante toma un informe de evaluación público y le pide a Copilot la
 **Práctica B: extracción de entidades sobre tres programas, de 9:45 a 10:15.**
 Se trabaja con tres conjuntos de reglas de operación de programas distintos. El objetivo es llegar a una sola tabla comparativa con las mismas columnas para los tres, y ahí es donde aparece la dificultad real: cada documento nombra las cosas de manera diferente y el modelo tiende a forzar la equivalencia.
 
-La práctica consiste en detectar dónde el modelo forzó una equivalencia que no existe y corregirla a mano. Se hace en Copilot dentro de Excel.
+La práctica consiste en detectar dónde el modelo forzó una equivalencia que no existe y corregirla a mano. Se hace en Copilot Chat con los tres documentos adjuntos, y la tabla final se pega en la plantilla tabular del curso.
 
 **Receso de 10 minutos.**
 
@@ -400,7 +402,7 @@ Atlas.ti y MAXQDA, que son el estándar de la investigación cualitativa formal 
 Estas tres se cubren por exposición conforme a lo indicado por la coordinación del Instituto, que señaló que las herramientas no disponibles desde la infraestructura institucional pueden abordarse mediante sesiones expositivas realizadas por los instructores.
 
 **El RAG institucional, de 11:10 a 11:25.**
-Cómo organizar una carpeta de SharePoint como base documental y hacer que Copilot trabaje anclado a ella. Es la versión operable hoy de lo que hace NotebookLM, y es lo único de la sesión que funciona con información interna de trabajo.
+Cómo organizar una carpeta de OneDrive como base documental y hacer que Copilot Chat trabaje anclado a ella; si el área ya trabaja en SharePoint, el mismo método aplica, previa verificación de que Copilot Chat alcance esa carpeta. Es la versión operable hoy de lo que hace NotebookLM, y es lo único de la sesión que funciona con información interna de trabajo.
 
 ### Entregables de la sesión 5
 
