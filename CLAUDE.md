@@ -19,6 +19,8 @@ The .gitignore exists to keep answer keys and instructor scripts out of a public
 
 When an exercise file needs a student version and an instructor version, the student version carries the `_PARTICIPANTE` suffix and is the only one committed.
 
+The instructor material has its own **private** repository, checked out nested at `instructor/` — a path this repo's .gitignore excludes entirely, so the public repo never sees it. Answer keys, session scripts, and the full registros file live there; operate on it with `git -C instructor/ …`. Nothing moves from `instructor/` into the public folders, ever.
+
 ## Critical: planted errors are intentional
 
 The synthetic exercise documents (`Informe_sintetico_LAB1.docx`, `Expedientes_LAB2.docx`, `Registros_atencion_ciudadana_PARTICIPANTE.xlsx`, `Hilo_correo_sintetico.docx`, `Transcripcion_reunion_sintetica.docx`) contain errors planted on purpose — inconsistent figures, a nonexistent bibliographic source, unsupported conclusions, biased evidence, omissions. Finding them is the point of the labs. Do not "fix" content errors in these files. All synthetic documents are fictitious and must stay marked as such on their cover page.
