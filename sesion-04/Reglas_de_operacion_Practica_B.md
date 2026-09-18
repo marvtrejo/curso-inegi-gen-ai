@@ -22,6 +22,15 @@ Si una liga llegara a fallar, el título exacto del acuerdo basta para volver a 
 
 ## ¿Y el informe de la Práctica A?
 
-La Práctica A pide un informe de evaluación público, el que tú elijas. El acervo natural es el del CONEVAL: [Evaluaciones y resultados de programas](https://www.coneval.org.mx/Evaluacion/Paginas/Evaluaciones-y-resultados-de-programas.aspx), con evaluaciones descargables desde 2007 y buscador por programa. Baja la de un programa que conozcas y tenla en PDF antes de la sesión.
+La Práctica A pide un informe de evaluación público. Puedes traer el de un programa que conozcas, del acervo del CONEVAL: [Evaluaciones y resultados de programas](https://www.coneval.org.mx/Evaluacion/Paginas/Evaluaciones-y-resultados-de-programas.aspx), con documentos descargables desde 2007 y buscador por programa.
+
+Si prefieres no buscar, usa cualquiera de estos dos, que ya están verificados y traen texto seleccionable:
+
+| Documento | Tamaño | Para qué sirve aquí |
+|---|---|---|
+| [Diagnóstico de Monitoreo de Políticas y Programas Sociales 2024, Secretaría de Bienestar](https://www.coneval.org.mx/coordinacion/Documents/monitoreo/informes/Diagn%C3%B3stico%20de%20Monitoreo/Diagnostico_Monitoreo_Bienestar_2024.pdf) | 13 páginas | El más cómodo para los doce minutos de la práctica: se alcanza a leer completo y a comparar las dos síntesis sin prisa. |
+| [Informe de Monitoreo de Programas Prioritarios 2024](https://www.coneval.org.mx/Monitoreo/Documents/Programas_y_acciones_sociales/Prioritarios/Informe_Monitoreo_Programas_Prioritarios_2024_.pdf) | 63 páginas | Más parecido a lo que revisas en tu trabajo. Con un documento así es más fácil que la síntesis abstractiva afirme algo que ninguna oración sostiene, que es justo lo que hay que cazar. |
+
+Los dos son del CONEVAL, son públicos y por lo tanto información verde. Descárgalos y adjúntalos en Copilot Chat, igual que las reglas de operación.
 
 Ligas verificadas el 15 de septiembre de 2026. Estos documentos son obra del Gobierno de México publicada en el DOF; no los cubre la licencia del curso.
