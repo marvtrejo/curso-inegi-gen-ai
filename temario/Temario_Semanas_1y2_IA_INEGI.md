@@ -396,13 +396,15 @@ Quince minutos con Copilot, que es el punto de comparación común de todos, y v
 **Puesta en común, de 10:20 a 10:50.**
 Cinco minutos por equipo. La presentación responde cuatro cosas: qué hizo mejor que Copilot, qué hizo peor, qué pide a cambio en cuenta, costo y aprendizaje, y para qué tarea concreta de esta área se recomendaría. No es una demostración de la herramienta, es un dictamen sobre ella.
 
-**Demostración, de 10:50 a 11:10.**
+**Demostración, de 10:50 a 11:07.**
 Atlas.ti y MAXQDA, que son el estándar de la investigación cualitativa formal y requieren licencia de paga, y NotebookLM, que está bloqueada en la red institucional. Las tres resuelven el mismo problema: dejar constancia de cómo se llegó al resultado.
 
 Estas tres se cubren por exposición conforme a lo indicado por la coordinación del Instituto, que señaló que las herramientas no disponibles desde la infraestructura institucional pueden abordarse mediante sesiones expositivas realizadas por los instructores.
 
-**El RAG institucional, de 11:10 a 11:25.**
+**El RAG institucional, de 11:07 a 11:25.**
 Cómo organizar una carpeta de OneDrive como base documental y hacer que Copilot Chat trabaje anclado a ella; si el área ya trabaja en SharePoint, el mismo método aplica, previa verificación de que Copilot Chat alcance esa carpeta. Es la versión operable hoy de lo que hace NotebookLM, y es lo único de la sesión que funciona con información interna de trabajo.
+
+**Ajuste del 21 de septiembre, verificado contra la documentación de Microsoft.** Lo que el Instituto tiene es Copilot Chat sin la licencia de paga Microsoft 365 Copilot, y Microsoft reserva a esa licencia el índice semántico que busca dentro de OneDrive y SharePoint. En Copilot Chat, adjuntar o referenciar un archivo equivale a subirlo a la conversación: trabaja con los archivos que el participante elige y con ninguno más. El bloque se ajustó en consecuencia. Abre con una lámina que distingue adjuntar documentos, que es ponerlos en la ventana de contexto, de un RAG, donde un buscador elige los fragmentos, y la práctica se volvió «el bibliotecario eres tú»: carpeta por asunto, nombres que digan qué contiene cada archivo, adjuntar los pertinentes, pedir la cita y comparar contra la misma pregunta sin adjuntos. Por esa lámina el bloque empieza tres minutos antes y la demostración anterior cierra a las 11:07. La profundidad técnica queda en `sesion-05/Anexo_Ventana_de_contexto_y_RAG.pptx`, con sus fuentes, para una charla opcional en el receso. Dos cambios de nombre y de condiciones que conviene tener presentes: NotebookLM se llama Gemini Notebook desde julio de 2026, y la cuenta gratuita de You.com es desde abril de 2026 una prueba de 25 consultas, por lo que el equipo 4 trabaja en Perplexity y usa You.com solo para contrastar.
 
 ### Entregables de la sesión 5
 
