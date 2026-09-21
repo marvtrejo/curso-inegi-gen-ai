@@ -426,34 +426,36 @@ Atlas.ti o MAXQDA con un proyecto de ejemplo ya codificado, que es lo único que
 
 Que cada equipo produzca una matriz de evidencia cualitativa completa y trazable, que es el entregable que mejor demuestra si el bloque funcionó.
 
-**Ajuste del 21 de septiembre, a petición del instructor.** La sesión se reorganizó para privilegiar el contenido técnico y dejar una sola práctica de laboratorio, que es además lo único que el contrato compromete para esta sesión. La evaluación de herramientas por equipo se movió a la sesión 5 como tarea, y el tiempo que ocupaba la coevaluación cruzada se integró al propio laboratorio como su paso de medición. El laboratorio baja de 85 minutos a 48 de práctica dentro de un bloque de 62, y la matriz baja de doce a seis afirmaciones trazadas, para que quepa el paso de verificación y medición sin que el reloj de la práctica se coma el cierre; la síntesis de dos cuartillas se termina en casa y se entrega el miércoles 23 antes de las 9:00.
+**Ajuste del 21 de septiembre, a petición del instructor.** La sesión se reorganizó para privilegiar el contenido técnico y dejar una sola práctica de laboratorio, que es además lo único que el contrato compromete para esta sesión. La evaluación de herramientas por equipo se movió a la sesión 5 como tarea, y el tiempo que ocupaba la coevaluación cruzada se integró al propio laboratorio como su paso de medición. El laboratorio baja de 85 minutos a 48 de práctica dentro de un bloque de 62, y la matriz baja de doce a seis afirmaciones trazadas, para que quepa el paso de verificación y medición sin que el reloj de la práctica se coma el cierre; la síntesis de dos cuartillas se termina en casa y se entrega el miércoles 23 antes de las 9:00. Una segunda pasada, del mismo 21 de septiembre, agregó tres láminas de procedencia documental a petición del instructor, porque el mazo cambiaba de documento fuente sin avisar; con ellas la sesión cierra alrededor de las 11:40 en lugar de las 11:30, y el guion del instructor trae el recorte para quien necesite terminar a tiempo.
 
 ### Desarrollo de la sesión
 
-**Dónde estamos, de 9:00 a 9:10.**
+**Dónde estamos y con qué documentos hemos trabajado, de 9:00 a 9:10.**
 Se recorre el arco del Módulo II en una lámina: las cuatro tareas de texto, cómo compara una máquina, dónde vive el documento y las ocho herramientas que los equipos midieron. La conclusión que abre la sesión es que las cuatro sesiones producen candidatos (frases, tablas, categorías, citas) y ninguna dijo cómo se decide si un candidato es cierto.
 
-**Cómo se prueba un hallazgo cualitativo, de 9:08 a 10:00.**
-Es el bloque técnico de la sesión y son siete láminas de contenido, con dos minutos reservados para preguntas al final.
+Enseguida, una lámina que el módulo no tenía y que resuelve un problema de narrativa: hasta ahora cada documento sintético aparecía en pantalla sin presentación, y el grupo tenía que acordarse de dónde salía. Los cuatro son el mismo programa ficticio. El informe nacional que se desmontó en la sesión 3, los 118 registros de atención ciudadana de las sesiones 1 y 4, las 41 intervenciones de los foros de la Entidad C de la sesión 4, y los seis expedientes de evaluación de hoy. Decirlo explícitamente es lo que hace que la pregunta de cierre, qué hallazgo se perdió en el camino del expediente al informe, tenga sentido.
+
+**Cómo se prueba un hallazgo cualitativo, de 9:10 a 10:10.**
+Es el bloque técnico de la sesión y son nueve láminas de contenido, con dos minutos reservados para preguntas al final. Cada lámina que usa un documento del curso trae una banda que dice de cuál sale y de qué parte, y las que usan el expediente de hoy van precedidas de una lámina que lo describe por dentro: lo que los seis equipos comparten, que es el marco normativo, y lo que solo trae cada entidad. Los ejemplos técnicos usan únicamente el marco normativo común, para que ningún equipo reciba una pista sobre su propio caso.
 
 Primero se nombran las tres fallas que ocurren entre el documento y el informe, cada una en un punto distinto de la cadena: extracción, cuando el asistente omite un elemento o entrega uno que no existe; atribución, cuando la cita es textual pero no sostiene la afirmación; y generalización, cuando la síntesis afirma más de lo que la matriz respalda. Las tres se ven igual en el informe terminado, que es la razón por la que una revisión desprevenida no encuentra ninguna.
 
 Después se mide cada una. La extracción se mide con precisión y recuperación, con un ejemplo tomado del propio marco normativo del laboratorio: el artículo 9 lista cinco requisitos documentales y prohíbe exigir otros, y se muestra qué pasa cuando un asistente devuelve seis. Una lámina aparte muestra que el mismo par de resultados cambia de ganador según cuánto pese cada error, y que ese peso lo declara el área usuaria antes de medir y no la fórmula. La atribución se mide yendo a la fuente, con dos casos del expediente: una cita que sí sostiene su afirmación y otra que no, aunque sea textual y esté bien copiada. La generalización se controla con la regla dura del laboratorio, y se explica por qué la síntesis abstractiva es donde aparecen las afirmaciones sin respaldo.
 
-El bloque cierra con el acuerdo entre codificadores. Se muestra por qué el porcentaje de acuerdo engaña cuando una categoría domina, usando el corpus de foros del propio curso, donde la clave del instructor y una reclasificación independiente coincidieron en 36 de 38 casos, y se compara con dos escenarios construidos para que se vea que el mismo porcentaje vale kappas distintos. Se explica cómo se lee un kappa y por qué la escala más citada es una convención y no un resultado.
+El bloque cierra con el acuerdo entre codificadores, precedido de una lámina que explica de dónde salen esos casos: los dos foros de consulta de la Entidad C, las tres intervenciones del moderador que quedan fuera, y la segunda clasificación independiente con la que se verificó la clave. Después se muestra por qué el porcentaje de acuerdo engaña cuando una categoría domina, con 36 de 38 coincidencias, y se compara con dos escenarios construidos para que se vea que el mismo porcentaje vale kappas distintos. La fórmula que aparece ahí es la misma que los equipos usan en el paso 4 del laboratorio.
 
 El bloque termina con la matriz de evidencia columna por columna y el nivel de confianza, que ya no son el marco conceptual de la sesión sino la herramienta concreta que aplica todo lo anterior.
 
-**Receso de diez minutos, de 10:00 a 10:10.**
+**Receso de diez minutos, de 10:10 a 10:20.**
 
-**Laboratorio Práctico 2, de 10:10 a 11:12. Es la única práctica de la sesión.**
+**Laboratorio Práctico 2, de 10:20 a 11:22. Es la única práctica de la sesión.**
 Cada equipo recibe un expediente con reglas de operación, un informe de evaluación previo y un conjunto de registros administrativos, todos de fuente pública o sintéticos. El bloque reparte seis minutos de encargo, dos de apertura de salas, cuarenta y ocho de práctica, dos de regreso y cuatro de reporte en plenaria. El encargo tiene cinco pasos con hora de corte: leer el expediente, escribir la definición operativa de confianza alta, media y baja, e identificar patrones con las técnicas de la sesión 4, diez minutos; construir la matriz con seis afirmaciones trazadas, veinte minutos; intercambiar la matriz con el equipo par, asignar nivel de confianza a las seis filas leyendo solo cita y fuente, y verificar tres de ellas contra el expediente del otro equipo, once minutos; calcular los dos números de la medición, cinco minutos; y elegir la afirmación que más costó trazar, dos minutos.
 
 La regla dura del laboratorio se mantiene: ninguna frase de la síntesis puede afirmar algo que no esté en la matriz.
 
 Los dos números que produce la medición son cuántas de las tres afirmaciones revisadas por el otro equipo resistieron, reportadas en fracción y no como porcentaje, y el acuerdo en el nivel de confianza corregido por azar, calculado con la misma fórmula que se enseñó en el bloque técnico y con enteros. Se dice expresamente que seis filas y tres verificaciones ilustran la mecánica pero no estiman la calidad de la matriz, y declarar ese alcance forma parte de lo que se evalúa.
 
-**Cierre del bloque y enlace con el Módulo III, de 11:12 a 11:30.**
+**Cierre del bloque y enlace con el Módulo III, de 11:22 a 11:40.**
 Se recogen las lecciones de las seis sesiones, se revisa que cada participante tenga sus entregables completos, y se explica qué sigue. Se plantea con claridad el límite que motiva el Módulo III: todo lo que se hizo en estas dos semanas fue sobre texto, y en el momento en que se necesita calcular algo sobre datos, el chat deja de ser suficiente y hay que pasar a un ambiente de código. En los últimos cinco minutos cierra el plazo del tema definitivo y la ficha de idoneidad del proyecto integrador.
 
 ### Rúbrica del Laboratorio Práctico 2
