@@ -44,7 +44,7 @@ Es la regla más importante del curso y se explica completa en la sesión 1. En 
 | Nivel | Qué incluye | Dónde se puede usar |
 |---|---|---|
 | **Verde** | Información ya publicada: reglas de operación del DOF, informes publicados, normatividad, microdatos públicos anonimizados. | Cualquier herramienta del curso. |
-| **Amarillo** | Información interna de trabajo sin datos personales ni información reservada: borradores, minutas, notas, análisis preliminares. | Solo Microsoft 365 Copilot, que es la única herramienta con contrato institucional. |
+| **Amarillo** | Información interna de trabajo sin datos personales ni información reservada: borradores, minutas, notas, análisis preliminares. | Solo Copilot Chat con la cuenta del Instituto, que es la única herramienta con contrato institucional. |
 | **Rojo** | Información confidencial o con datos personales: padrones con nombres o CURP, microdatos identificables, información sujeta a reserva. | En ninguna herramienta. Para practicar se usa una versión enmascarada, técnica que se enseña en la sesión 1. |
 
 **Las herramientas con plan gratuito usan tus conversaciones para entrenar sus modelos, salvo que tú lo apagues.** En la sesión 1 hacemos ese ajuste juntos, herramienta por herramienta. Hasta que lo hagas, no subas nada que no sea información verde.
