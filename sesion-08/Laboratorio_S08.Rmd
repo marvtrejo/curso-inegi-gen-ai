@@ -1,0 +1,100 @@
+---
+title: "Práctica guiada · Sesión 8: el flujo reproducible"
+subtitle: "Versión en R (dplyr), para quien programa · Curso de IA Aplicada, INEGI 2026"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: tango
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Este documento es la versión **reproducible** del análisis de la Sesión 7, escrito en **R con dplyr**. Si lo reinicias y lo corres de la primera celda a la última, siempre da 3,200. Esa es la prueba: mismo insumo más mismos pasos igual a mismo resultado, para cualquiera.
+
+Dos cosas lo hacen reproducible: cada arreglo al dato es una **línea de código**, no un clic que se hizo una vez; y cada bloque trae una **explicación** de qué hace y por qué. Eso es lo que en el pizarrón llamamos documentado.
+
+En R Markdown la disciplina de «reiniciar y correr todo» equivale a tejer el documento de cero (Knit): si el número no sale igual al tejer, no era reproducible.
+
+```{r librerias}
+library(dplyr)
+```
+
+## 1. El insumo, fijo y descrito
+
+El mismo padrón de la Sesión 7: 18 registros de un programa de apoyo (ficticio), tal como llegan, todo como texto. No se toca a mano; todo lo que le pase, le pasa aquí.
+
+```{r insumo}
+# (folio, entidad, monto_apoyo tal como se capturo, estatus)
+df <- data.frame(
+  folio = c("F-001","F-002","F-003","F-004","F-005","F-006","F-007","F-008","F-009",
+            "F-010","F-011","F-012","F-013","F-014","F-015","F-003","F-009","F-016"),
+  entidad = c("Norte","Centro","Sur","Norte","Centro","Sur","Norte","Centro","Sur",
+              "Norte","Centro","Sur","Norte","Centro","Sur","Sur","Sur","Norte"),
+  monto_apoyo = c("2000","5,000","2000","5,000","2000","2000","5,000","2000","2000",
+                  "5,000","2000","5,000","2000","5,000","2000","2000","2000",""),
+  estatus = c("Activo","activo","ACTIVO","Activo","Baja","Activo ","Activo","baja","Activo",
+              "Activo","Activo","Activo","Activo","Activo","Baja","ACTIVO","Activo","Activo")
+)
+cat(nrow(df), "renglones x", ncol(df), "columnas\n")
+```
+
+## 2. La limpieza, paso a paso y documentada
+
+Tres arreglos, cada uno una línea que se vuelve a correr:
+
+1. **Texto a número.** Los montos ampliados vienen como «5,000» con coma; se quita la coma y se convierten a número. Lo que quede vacío se marca como faltante.
+2. **Un folio, una vez.** Se quitan los folios repetidos, para no contar dos veces al mismo beneficiario.
+3. **Fuera lo faltante.** El registro sin monto no entra al promedio; se reporta aparte como cobertura.
+
+```{r limpieza}
+validos <- df %>%
+  mutate(monto_limpio = as.numeric(gsub(",", "", monto_apoyo))) %>%  # 1. texto a numero
+  distinct(folio, .keep_all = TRUE) %>%                              # 2. un folio, una vez
+  filter(!is.na(monto_limpio))                                       # 3. fuera lo faltante
+
+promedio_correcto <- validos %>% summarise(m = mean(monto_limpio)) %>% pull(m)
+cat(sprintf("Beneficiarios unicos con monto: %d\n", nrow(validos)))
+cat(sprintf("Promedio corregido: %s\n",
+            formatC(round(promedio_correcto), format = "d", big.mark = ",")))
+cat(sprintf("(cobertura: %d de %d folios con monto valido)\n",
+            nrow(validos), n_distinct(df$folio)))
+```
+
+## 3. La prueba de reproducibilidad
+
+La prueba de fuego es reiniciar y correr todo. Aquí la dejamos automática: `stopifnot` revisa que el resultado sea 3,200. Si alguien cambia un paso y rompe el flujo, esta línea detiene el documento y avisa.
+
+```{r prueba}
+stopifnot(round(promedio_correcto) == 3200)
+cat("Reproducible: corre de cero, de arriba a abajo, y da 3,200.\n")
+```
+
+## 4. Chat contra código
+
+Un modelo de chat predice el siguiente texto; no opera los números, los estima. Por eso cuenta mal una tabla y multiplica mal números grandes. El código no adivina: opera. Estas tres respuestas del código son verificables; las del chat son ilustrativas de su típico error.
+
+```{r chat_vs_codigo}
+norte    <- df %>% filter(entidad == "Norte") %>% nrow()   # cuenta exacta del Norte
+producto <- 4827 * 3916                                    # operacion grande, exacta
+
+cat(sprintf("Beneficiarios del Norte  ->  chat: ~5              codigo: %d\n", norte))
+cat(sprintf("4,827 x 3,916            ->  chat: ~18.9 millones  codigo: %s\n",
+            formatC(producto, format = "d", big.mark = ",")))
+cat(sprintf("Promedio del apoyo       ->  chat: ~2,500          codigo: %s\n",
+            formatC(round(promedio_correcto), format = "d", big.mark = ",")))
+```
+
+## 5. El agente de código, y por qué dentro del documento
+
+Esta secuencia documentada y re-corrible es exactamente lo que produce un agente de código: le pides el análisis y escribe y ejecuta el código. La diferencia con pedirle el número a un chat es que aquí **puedes leer cada paso, cambiarlo y volver a correrlo**. El entorno reproducible es lo que convierte al agente de caja negra en algo auditable.
+
+Esa es la idea de fondo del módulo, en una línea: no le pidas a la IA el número, pídele el código que lo calcula, y córrelo tú en un entorno donde se pueda revisar y repetir.
+
+## Cierre
+
+Ya tienen el flujo completo: explorar, depurar y verificar (Sesión 7), documentar y reproducir (hoy). La Sesión 9 lo aplica de principio a fin sobre un registro más grande, y la rúbrica técnica evalúa justo esto: un entregable que otra persona puede volver a correr y obtener el mismo resultado.

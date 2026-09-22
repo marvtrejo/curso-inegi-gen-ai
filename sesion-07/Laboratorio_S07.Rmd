@@ -1,0 +1,117 @@
+---
+title: "Práctica guiada · Sesión 7"
+subtitle: "Versión en R (dplyr), para quien programa · Curso de IA Aplicada, INEGI 2026"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: tango
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Esta es la misma práctica del notebook de Python, escrita en **R con dplyr**. Reproduce los mismos números que la hoja `Laboratorio_S07.xlsx`; si algo no coincide, algo se calculó mal.
+
+El hilo del día es el mismo del pizarrón: la IA (o el código) entrega un candidato, y el número es correcto solo cuando revisas que el cálculo hizo lo que pediste y que los datos lo sostienen.
+
+```{r librerias}
+library(dplyr)
+```
+
+## El padrón (ficticio)
+
+Lo cargamos tal como llega un registro administrativo real: todo como texto. Ahí empiezan los problemas, porque los montos ampliados vienen con coma de miles y un promedio ingenuo no los reconoce como número.
+
+```{r padron}
+# (folio, entidad, monto_apoyo tal como se capturo, estatus)
+df <- data.frame(
+  folio = c("F-001","F-002","F-003","F-004","F-005","F-006","F-007","F-008","F-009",
+            "F-010","F-011","F-012","F-013","F-014","F-015","F-003","F-009","F-016"),
+  entidad = c("Norte","Centro","Sur","Norte","Centro","Sur","Norte","Centro","Sur",
+              "Norte","Centro","Sur","Norte","Centro","Sur","Sur","Sur","Norte"),
+  monto_apoyo = c("2000","5,000","2000","5,000","2000","2000","5,000","2000","2000",
+                  "5,000","2000","5,000","2000","5,000","2000","2000","2000",""),
+  estatus = c("Activo","activo","ACTIVO","Activo","Baja","Activo ","Activo","baja","Activo",
+              "Activo","Activo","Activo","Activo","Activo","Baja","ACTIVO","Activo","Activo")
+)
+# las dos ultimas filas F-003 y F-009 son folios duplicados; F-016 trae el monto vacio
+cat(nrow(df), "renglones x", ncol(df), "columnas\n")
+```
+
+## Parte 3 primero: EDA (mirar antes de calcular)
+
+Antes de cualquier estadístico, el barrido de exploración. Con dplyr son pocas líneas, y aquí sí revela lo que Excel esconde: `n_distinct()` distingue mayúsculas, así que ve las varias formas de escribir «Activo» que el `COUNTIF` de Excel funde en una sola.
+
+```{r eda}
+# glimpse muestra los tipos: todo llego como texto (chr)
+glimpse(df)
+
+# monto como numero, limpiando la coma de miles (lo usamos de aqui en adelante)
+df <- df %>% mutate(monto_limpio = as.numeric(gsub(",", "", monto_apoyo)))
+
+df %>% summarise(
+  faltantes         = sum(is.na(monto_limpio)),
+  monto_min         = min(monto_limpio, na.rm = TRUE),
+  monto_max         = max(monto_limpio, na.rm = TRUE),
+  folios_duplicados = sum(duplicated(folio))
+)
+
+# capitalizar = quitar espacios, todo a minuscula y mayuscula inicial
+capitalizar <- function(x) {
+  x <- tolower(trimws(x))
+  paste0(toupper(substring(x, 1, 1)), substring(x, 2))
+}
+cat("Estatus, formas distintas (sin limpiar):", n_distinct(df$estatus), "\n")
+cat("  ->", paste(unique(df$estatus), collapse = ", "), "\n")
+cat("Estatus, ya limpio:", n_distinct(capitalizar(df$estatus)), "\n")
+cat("  ->", paste(unique(capitalizar(df$estatus)), collapse = ", "), "\n")
+```
+
+## Parte 2: el promedio ingenuo contra el corregido
+
+Este bloque es lo que generaría un **prompt preciso**: «promedio de monto_apoyo por beneficiario, tratando el texto como número, ignorando vacías y contando cada folio una sola vez». Un prompt vago («saca el promedio del apoyo») habría intentado promediar una columna de texto, que ni siquiera es un número.
+
+```{r promedio}
+# Ingenuo: convierto a numero pero NO limpio la coma ni quito duplicados.
+# Las becas ampliadas ("5,000") no se reconocen como numero y se caen.
+monto_ingenuo <- as.numeric(df$monto_apoyo)
+promedio_ingenuo <- mean(monto_ingenuo, na.rm = TRUE)
+cat(sprintf("Promedio ingenuo   = %s   (sobre %d celdas)\n",
+            formatC(round(promedio_ingenuo), format = "d", big.mark = ","),
+            sum(!is.na(monto_ingenuo))))
+
+# Corregido: quito folios duplicados (primera aparicion) y excluyo el monto vacio.
+validos <- df %>%
+  distinct(folio, .keep_all = TRUE) %>%
+  filter(!is.na(monto_limpio))
+promedio_correcto <- validos %>% summarise(m = mean(monto_limpio)) %>% pull(m)
+cat(sprintf("Promedio corregido = %s   (sobre %d beneficiarios unicos)\n",
+            formatC(round(promedio_correcto), format = "d", big.mark = ","),
+            nrow(validos)))
+
+brecha <- (promedio_correcto - promedio_ingenuo) / promedio_correcto
+cat(sprintf("El ingenuo subestima el apoyo en %.1f%%\n", 100 * brecha))
+```
+
+El promedio ingenuo (2,000) subestima el apoyo en 37.5% frente al corregido (3,200). El código no mintió: promedió lo que pudo leer como número, y todas las becas ampliadas estaban guardadas como texto. El error vivía en los datos, no en la fórmula.
+
+## Extra: el promedio por entidad (ya limpio)
+
+Con los datos limpios, el desglose que pedía el prompt sale de un `group_by` más un `summarise`.
+
+```{r por_entidad}
+por_entidad <- validos %>%
+  group_by(entidad) %>%
+  summarise(promedio = round(mean(monto_limpio)),
+            beneficiarios = n(),
+            .groups = "drop")
+por_entidad
+```
+
+## Cierre
+
+Este notebook ya es lo que abre la Sesión 8: un flujo reproducible. Cualquiera puede volver a correrlo sobre el mismo padrón y obtener 2,000, 3,200 y el desglose por entidad, con la limpieza escrita paso a paso en vez de a mano. La bitácora del Excel es exactamente esto, pero en código: el registro de qué se limpió y por qué, que hace defendible cada número.
