@@ -1,0 +1,120 @@
+---
+title: "Laboratorio Cuantitativo Aplicado · Sesión 9 · Tarea (R)"
+subtitle: "Curso de IA Aplicada, INEGI 2026"
+author: "Nombre: ____________________"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: tango
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Cómo se entrega
+
+Trabajas sobre `datos_encuesta_s9.csv` (900 hogares, forma de encuesta). Completa las cinco partes y teje a HTML. Cada parte trae un **punto de partida** que ya corre y un bloque **TODO** donde escribes lo correcto; cámbialo a `eval = TRUE` cuando lo termines. Cada parte pide una **justificación escrita**. Regla dura: el número debe ser correcto, defendible y reproducible.
+
+```{r datos}
+library(survey)
+library(dplyr)
+library(estimatr)
+
+set.seed(909)   # Parte 5: fija el azar desde el inicio
+
+d <- read.csv("datos_encuesta_s9.csv")
+d$estrato <- factor(d$estrato, levels = c("Alta", "Media", "Baja"))
+cat(nrow(d), "hogares,", length(unique(d$upm)), "UPM\n")
+```
+
+# Parte 1 · Explorar y ponderar
+
+```{r p1-partida}
+crudo <- mean(d$ingreso)
+cat(sprintf("Ingreso crudo (sin ponderar): %s\n", formatC(round(crudo), format = "d", big.mark = ",")))
+```
+
+```{r p1-todo, eval=FALSE}
+# TODO: estima el ingreso ponderado con el diseño y compáralo con el crudo.
+dis  <- svydesign(ids = ~____, strata = ~____, weights = ~____, data = d, nest = TRUE)
+pond <- svymean(~ingreso, dis)
+cat(sprintf("Ponderado: %s (EE %s) | subestima %.1f%%\n",
+            formatC(round(coef(pond)), format = "d", big.mark = ","),
+            formatC(round(SE(pond)),   format = "d", big.mark = ","),
+            100 * (coef(pond) - crudo) / coef(pond)))
+```
+
+**Justificación (tu respuesta):** _____
+
+# Parte 2 · El efecto con el error estándar correcto
+
+```{r p2-partida}
+m_iid <- lm(score ~ programa, data = d)
+cat(sprintf("Efecto: %.1f | EE clasico: %.2f (p = %.3f)\n",
+            coef(m_iid)["programa"],
+            summary(m_iid)$coefficients["programa", "Std. Error"],
+            summary(m_iid)$coefficients["programa", "Pr(>|t|)"]))
+```
+
+```{r p2-todo, eval=FALSE}
+# TODO: el mismo efecto, con el error estándar por conglomerado (UPM).
+m_clu <- lm_robust(score ~ programa, data = d, clusters = ____, se_type = "stata")
+cat(sprintf("EE por conglomerado: %.2f (p = %.3f)\n",
+            m_clu$std.error["programa"], m_clu$p.value["programa"]))
+```
+
+**Justificación (tu respuesta):** _____
+
+# Parte 3 · Condicionar por estrato (Simpson)
+
+```{r p3-partida}
+d %>% group_by(programa) %>% summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+```
+
+```{r p3-todo, eval=FALSE}
+# TODO: el mismo efecto, pero por estrato. ¿Se mantiene el signo?
+d %>% group_by(____, programa) %>% summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+```
+
+**Justificación (tu respuesta):** _____
+
+# Parte 4 · Auditar a la IA
+
+Este es el análisis que entregó un asistente sobre estos datos. Corre y se ve profesional. Tu trabajo es auditarlo.
+
+```{r p4-ia}
+# --- Analisis que entrego la IA ---
+cat(sprintf("Ingreso promedio: %s\n", formatC(round(mean(d$ingreso)), format = "d", big.mark = ",")))
+ia <- lm(score ~ programa, data = d)
+cat(sprintf("Efecto del programa: %.1f (EE %.2f)\n",
+            coef(ia)["programa"], summary(ia)$coefficients["programa", "Std. Error"]))
+# Conclusion de la IA: "ingreso 7,684; el programa REDUCE el score 3.7 puntos, significativo."
+```
+
+```{r p4-todo, eval=FALSE}
+# TODO: corrige los tres errores de la IA.
+# 1. El ingreso, ponderado (usa el diseño de la Parte 1).
+# 2. El efecto, con el error por conglomerado (Parte 2).
+# 3. El efecto, por estrato (Parte 3).
+# Escribe abajo, para cada uno, el numero correcto contra el que reporto la IA.
+```
+
+**Auditoría (tu respuesta):** ¿Cuáles son los tres errores? Para cada uno, ¿qué reportó la IA, cuál es el valor correcto, y por qué se equivocó? ¿El programa ayuda o daña? _____
+
+# Parte 5 · Reproducible
+
+```{r p5-todo, eval=FALSE}
+# TODO: documenta el insumo y registra las versiones. Luego reinicia y corre todo de cero.
+cat("Insumo: datos_encuesta_s9.csv,", nrow(d), "filas x", ncol(d), "columnas\n")
+print(sessionInfo(), locale = FALSE)
+```
+
+**Justificación (tu respuesta):** ¿Por qué la semilla va desde el inicio? ¿Qué comprueba reiniciar y correr todo? _____
+
+# Cierre (tu respuesta)
+
+En una o dos frases: ¿por qué un análisis de IA que corre sin error puede seguir estando mal, y qué lo hace defendible? _____
