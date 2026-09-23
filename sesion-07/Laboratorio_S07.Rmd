@@ -1,6 +1,7 @@
 ---
-title: "Práctica guiada · Sesión 7"
-subtitle: "Versión en R (dplyr), para quien programa · Curso de IA Aplicada, INEGI 2026"
+title: "Laboratorio Sesión 7 · Tarea"
+subtitle: "Diseño muestral, inferencia y agregación · Curso de IA Aplicada, INEGI 2026"
+author: "Nombre: ____________________"
 output:
   html_document:
     toc: true
@@ -14,104 +15,112 @@ lang: es
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-Esta es la misma práctica del notebook de Python, escrita en **R con dplyr**. Reproduce los mismos números que la hoja `Laboratorio_S07.xlsx`; si algo no coincide, algo se calculó mal.
+## Cómo se entrega
 
-El hilo del día es el mismo del pizarrón: la IA (o el código) entrega un candidato, y el número es correcto solo cuando revisas que el cálculo hizo lo que pediste y que los datos lo sostienen.
+Trabajas sobre `datos_encuesta_sintetica.csv`: un microdato ficticio con forma de encuesta, con estratos por marginación, unidades primarias de muestreo (UPM) y factores de expansión. Completa las tres tareas y teje el documento a HTML.
 
-```{r librerias}
+Cada tarea trae un **punto de partida** que ya corre (el análisis ingenuo, el que haría la IA por default) y un bloque marcado **TODO** donde escribes el análisis correcto. Cuando lo completes, cambia ese bloque a `eval = TRUE`. Cada tarea pide además una **justificación escrita**: por qué ponderar, por qué ese error estándar, por qué condicionar. Un número sin su razón no cuenta.
+
+Puedes apoyarte en un asistente de IA para escribir el código, pero el diseño, la comparabilidad y el sentido del número son tuyos.
+
+```{r datos}
+library(survey)
 library(dplyr)
+library(estimatr)
+
+d <- read.csv("datos_encuesta_sintetica.csv")
+d$estrato <- factor(d$estrato, levels = c("Alta", "Media", "Baja"))
+cat(nrow(d), "hogares,", length(unique(d$upm)), "UPM\n")
+str(d)
 ```
 
-## El padrón (ficticio)
+# Tarea 1 · Ponderar el ingreso
 
-Lo cargamos tal como llega un registro administrativo real: todo como texto. Ahí empiezan los problemas, porque los montos ampliados vienen con coma de miles y un promedio ingenuo no los reconoce como número.
+Estima el ingreso medio de dos maneras y compáralas: el promedio crudo (que trata a todos igual) y el estimador de diseño (que usa el factor de expansión). ¿Cuánto subestima el ingenuo, y por qué?
 
-```{r padron}
-# (folio, entidad, monto_apoyo tal como se capturo, estatus)
-df <- data.frame(
-  folio = c("F-001","F-002","F-003","F-004","F-005","F-006","F-007","F-008","F-009",
-            "F-010","F-011","F-012","F-013","F-014","F-015","F-003","F-009","F-016"),
-  entidad = c("Norte","Centro","Sur","Norte","Centro","Sur","Norte","Centro","Sur",
-              "Norte","Centro","Sur","Norte","Centro","Sur","Sur","Sur","Norte"),
-  monto_apoyo = c("2000","5,000","2000","5,000","2000","2000","5,000","2000","2000",
-                  "5,000","2000","5,000","2000","5,000","2000","2000","2000",""),
-  estatus = c("Activo","activo","ACTIVO","Activo","Baja","Activo ","Activo","baja","Activo",
-              "Activo","Activo","Activo","Activo","Activo","Baja","ACTIVO","Activo","Activo")
-)
-# las dos ultimas filas F-003 y F-009 son folios duplicados; F-016 trae el monto vacio
-cat(nrow(df), "renglones x", ncol(df), "columnas\n")
+```{r t1-partida}
+# Punto de partida: lo que daria la IA por default
+crudo <- mean(d$ingreso)
+cat(sprintf("Ingreso crudo (sin ponderar): %s\n", formatC(round(crudo), format = "d", big.mark = ",")))
 ```
 
-## Parte 3 primero: EDA (mirar antes de calcular)
+```{r t1-todo, eval=FALSE}
+# TODO: construye el diseño y estima el ingreso ponderado.
+# Pista: completa las formulas con las columnas correctas (upm, estrato, factor).
+dis  <- svydesign(ids = ~____, strata = ~____, weights = ~____, data = d, nest = TRUE)
+pond <- svymean(~ingreso, dis)
 
-Antes de cualquier estadístico, el barrido de exploración. Con dplyr son pocas líneas, y aquí sí revela lo que Excel esconde: `n_distinct()` distingue mayúsculas, así que ve las varias formas de escribir «Activo» que el `COUNTIF` de Excel funde en una sola.
+cat(sprintf("Ingreso ponderado: %s   (EE %s)\n",
+            formatC(round(coef(pond)), format = "d", big.mark = ","),
+            formatC(round(SE(pond)),   format = "d", big.mark = ",")))
+cat(sprintf("El crudo subestima en %.1f%%\n", 100 * (coef(pond) - crudo) / coef(pond)))
 
-```{r eda}
-# glimpse muestra los tipos: todo llego como texto (chr)
-glimpse(df)
-
-# monto como numero, limpiando la coma de miles (lo usamos de aqui en adelante)
-df <- df %>% mutate(monto_limpio = as.numeric(gsub(",", "", monto_apoyo)))
-
-df %>% summarise(
-  faltantes         = sum(is.na(monto_limpio)),
-  monto_min         = min(monto_limpio, na.rm = TRUE),
-  monto_max         = max(monto_limpio, na.rm = TRUE),
-  folios_duplicados = sum(duplicated(folio))
-)
-
-# capitalizar = quitar espacios, todo a minuscula y mayuscula inicial
-capitalizar <- function(x) {
-  x <- tolower(trimws(x))
-  paste0(toupper(substring(x, 1, 1)), substring(x, 2))
-}
-cat("Estatus, formas distintas (sin limpiar):", n_distinct(df$estatus), "\n")
-cat("  ->", paste(unique(df$estatus), collapse = ", "), "\n")
-cat("Estatus, ya limpio:", n_distinct(capitalizar(df$estatus)), "\n")
-cat("  ->", paste(unique(capitalizar(df$estatus)), collapse = ", "), "\n")
+# TODO (opcional): muestra el % de la muestra que es cada estrato, para explicar el sesgo.
 ```
 
-## Parte 2: el promedio ingenuo contra el corregido
+**Justificación (tu respuesta):** _____
 
-Este bloque es lo que generaría un **prompt preciso**: «promedio de monto_apoyo por beneficiario, tratando el texto como número, ignorando vacías y contando cada folio una sola vez». Un prompt vago («saca el promedio del apoyo») habría intentado promediar una columna de texto, que ni siquiera es un número.
+# Tarea 2 · El error estándar correcto
 
-```{r promedio}
-# Ingenuo: convierto a numero pero NO limpio la coma ni quito duplicados.
-# Las becas ampliadas ("5,000") no se reconocen como numero y se caen.
-monto_ingenuo <- as.numeric(df$monto_apoyo)
-promedio_ingenuo <- mean(monto_ingenuo, na.rm = TRUE)
-cat(sprintf("Promedio ingenuo   = %s   (sobre %d celdas)\n",
-            formatC(round(promedio_ingenuo), format = "d", big.mark = ","),
-            sum(!is.na(monto_ingenuo))))
+Estima el efecto del programa sobre el `score` con una regresión. Reporta el error estándar clásico y el error por conglomerado (UPM). ¿Sigue siendo significativo el efecto cuando usas el error correcto?
 
-# Corregido: quito folios duplicados (primera aparicion) y excluyo el monto vacio.
-validos <- df %>%
-  distinct(folio, .keep_all = TRUE) %>%
-  filter(!is.na(monto_limpio))
-promedio_correcto <- validos %>% summarise(m = mean(monto_limpio)) %>% pull(m)
-cat(sprintf("Promedio corregido = %s   (sobre %d beneficiarios unicos)\n",
-            formatC(round(promedio_correcto), format = "d", big.mark = ","),
-            nrow(validos)))
-
-brecha <- (promedio_correcto - promedio_ingenuo) / promedio_correcto
-cat(sprintf("El ingenuo subestima el apoyo en %.1f%%\n", 100 * brecha))
+```{r t2-partida}
+# Punto de partida: la regresion con el error estandar clasico (IID)
+m_iid <- lm(score ~ programa, data = d)
+cat(sprintf("Efecto del programa: %.1f puntos\n", coef(m_iid)["programa"]))
+cat(sprintf("EE clasico (IID): %.2f   p = %.3f\n",
+            summary(m_iid)$coefficients["programa", "Std. Error"],
+            summary(m_iid)$coefficients["programa", "Pr(>|t|)"]))
 ```
 
-El promedio ingenuo (2,000) subestima el apoyo en 37.5% frente al corregido (3,200). El código no mintió: promedió lo que pudo leer como número, y todas las becas ampliadas estaban guardadas como texto. El error vivía en los datos, no en la fórmula.
-
-## Extra: el promedio por entidad (ya limpio)
-
-Con los datos limpios, el desglose que pedía el prompt sale de un `group_by` más un `summarise`.
-
-```{r por_entidad}
-por_entidad <- validos %>%
-  group_by(entidad) %>%
-  summarise(promedio = round(mean(monto_limpio)),
-            beneficiarios = n(),
-            .groups = "drop")
-por_entidad
+```{r t2-todo, eval=FALSE}
+# TODO: estima el mismo efecto con el error estandar por conglomerado.
+# Pista: lm_robust(score ~ programa, data = d, clusters = ____, se_type = "stata")
+m_clu <- lm_robust(score ~ programa, data = d, clusters = ____, se_type = "stata")
+cat(sprintf("EE por conglomerado: %.2f   p = %.3f\n",
+            m_clu$std.error["programa"], m_clu$p.value["programa"]))
 ```
 
-## Cierre
+**Justificación (tu respuesta):** _____
 
-Este notebook ya es lo que abre la Sesión 8: un flujo reproducible. Cualquiera puede volver a correrlo sobre el mismo padrón y obtener 2,000, 3,200 y el desglose por entidad, con la limpieza escrita paso a paso en vez de a mano. La bitácora del Excel es exactamente esto, pero en código: el registro de qué se limpió y por qué, que hace defendible cada número.
+# Tarea 3 · Cazar a Simpson
+
+Compara el efecto del programa en agregado contra el efecto dentro de cada estrato. ¿Se mantiene el signo? Si se invierte, explica por qué.
+
+```{r t3-partida}
+# Punto de partida: la comparacion cruda (agregada)
+d %>% group_by(programa) %>%
+  summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+```
+
+```{r t3-todo, eval=FALSE}
+# TODO: repite la comparacion, pero condicionando por estrato.
+# Pista: agrega estrato al group_by, antes de programa.
+d %>% group_by(____, programa) %>%
+  summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+
+# TODO (opcional): cuenta cuantos tratados hay por estrato, para explicar la reversion.
+```
+
+**Justificación (tu respuesta):** _____
+
+# Tarea 4 · Audita a la IA (el ejercicio del demo en vivo)
+
+En el demo en vivo le pedimos a un asistente, en código, si el programa sube o baja el `score`. Usó el diseño muestral bien, y su código concluyó: «el programa se asocia con un score significativamente menor (p ≈ 0.004)». Tu trabajo es auditar esa conclusión con tu propio análisis.
+
+```{r t4-partida}
+# Reproduce el agregado que reporto la IA
+d %>% group_by(programa) %>% summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+```
+
+```{r t4-todo, eval=FALSE}
+# TODO: el mismo efecto, pero por estrato. Comparalo con el agregado de arriba.
+# Pista: agrega estrato al group_by, antes de programa.
+d %>% group_by(____, programa) %>% summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+```
+
+**Auditoría (tu respuesta):** ¿Es correcta la conclusión de la IA? ¿Qué hizo bien (lo mecánico) y qué hizo mal (la conclusión)? ¿Cuál es la conclusión correcta, y por qué el agregado engaña? _____
+
+# Cierre (tu respuesta)
+
+En una o dos frases: el mismo `lm(score ~ programa)` que escribe la IA sin pensar, ¿por qué está mal por tres razones a la vez, y qué corrige cada una? _____
