@@ -1,0 +1,133 @@
+---
+title: "Laboratorio Sesión 8 · Tarea"
+subtitle: "Entornos reproducibles: semilla, aritmética y entorno · Curso de IA Aplicada, INEGI 2026"
+author: "Nombre: ____________________"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: tango
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Cómo se entrega
+
+Trabajas sobre el mismo microdato de la Sesión 7 (`datos_encuesta_sintetica.csv`). Completa las tres tareas y teje el documento a HTML.
+
+Cada tarea trae un **punto de partida** que ya corre (la versión no reproducible o frágil) y un bloque marcado **TODO** donde escribes la versión correcta; cuando lo completes, cambia ese bloque a `eval = TRUE`. Cada tarea pide además una **justificación escrita**. La regla dura: el entregable tiene que reproducir, es decir, dar el mismo número al reiniciar y correr todo de cero.
+
+```{r datos}
+d <- read.csv("datos_encuesta_sintetica.csv")
+cat(nrow(d), "hogares\n")
+```
+
+# Tarea 1 · Fijar el azar
+
+Bootstrapea el error estándar del efecto del programa. Muestra que sin semilla cambia entre corridas, y que con `set.seed` obtienes el mismo número dos veces.
+
+```{r t1-partida}
+# Punto de partida: bootstrap SIN semilla (no reproducible)
+boot_sin_semilla <- function(B = 1000) {
+  n <- nrow(d)
+  est <- replicate(B, {
+    i  <- sample(n, n, replace = TRUE)
+    dd <- d[i, ]
+    mean(dd$score[dd$programa == 1]) - mean(dd$score[dd$programa == 0])
+  })
+  sd(est)
+}
+cat("Corrida 1:", round(boot_sin_semilla(), 2), "\n")
+cat("Corrida 2:", round(boot_sin_semilla(), 2), "   (distinto: no reproducible)\n")
+```
+
+```{r t1-todo, eval=FALSE}
+# TODO: agrega set.seed y muestra que dos corridas dan el MISMO numero.
+# Pista: completa la semilla en la linea marcada.
+boot_con_semilla <- function(seed, B = 1000) {
+  set.seed(____)   # <- fija el azar aqui
+  n <- nrow(d)
+  est <- replicate(B, {
+    i  <- sample(n, n, replace = TRUE)
+    dd <- d[i, ]
+    mean(dd$score[dd$programa == 1]) - mean(dd$score[dd$programa == 0])
+  })
+  sd(est)
+}
+cat("Con semilla, corrida 1:", round(boot_con_semilla(1), 2), "\n")
+cat("Con semilla, corrida 2:", round(boot_con_semilla(1), 2), "   (identico)\n")
+```
+
+**Justificación (tu respuesta):** _____
+
+# Tarea 2 · Cazar la fórmula frágil
+
+Esta función de varianza escrita a mano devuelve un número sin error, pero el número está mal. Diagnostica por qué y arréglala con la función probada.
+
+```{r t2-partida}
+# Punto de partida: varianza escrita a mano (formula de libro)
+var_ingenua <- function(x) {
+  n <- length(x)
+  (sum(x^2) - n * mean(x)^2) / (n - 1)
+}
+x <- c(1e9 + 4, 1e9 + 5, 1e9 + 6)   # tres numeros que van de uno en uno
+cat("Formula ingenua:", var_ingenua(x), "\n")   # que devuelve?
+```
+
+```{r t2-todo, eval=FALSE}
+# TODO: calcula la varianza con la funcion probada de R y comparala.
+# Pista: la funcion se llama var().
+cat("Funcion probada:", ____(x), "\n")
+```
+
+**Justificación (tu respuesta):** ¿Cuánto vale de verdad la varianza de esos tres números? ¿Por qué la fórmula ingenua da lo que da, sin marcar error? _____
+
+# Tarea 3 · Dejar el flujo reproducible
+
+Cierra el flujo: insumo fijo y descrito, y registro de versiones. Luego reinicia la sesión y corre todo de cero para comprobar que el número no cambia.
+
+```{r t3-todo, eval=FALSE}
+# TODO 1: describe el insumo (que archivo, con que forma).
+cat("Insumo: datos_encuesta_sintetica.csv,", nrow(d), "filas x", ncol(d), "columnas\n")
+
+# TODO 2: registra las versiones del entorno (queda en el HTML tejido).
+print(sessionInfo(), locale = FALSE)
+```
+
+**Justificación (tu respuesta):** ¿Por qué se archiva el flujo terminado y no el prompt que le diste a la IA? ¿Qué comprueba reiniciar y correr todo? _____
+
+# Tarea 4 · Audita a la IA
+
+Este es el análisis que entregó un asistente. Corre y devuelve números, pero trae los dos errores de hoy. Audítalo.
+
+```{r t4-partida}
+# --- Analisis que entrego la IA ---
+boot_ia <- function(B = 1000) {                 # sin set.seed
+  n <- nrow(d)
+  est <- replicate(B, { i <- sample(n, n, TRUE); dd <- d[i, ]
+    mean(dd$score[dd$programa == 1]) - mean(dd$score[dd$programa == 0]) })
+  sd(est)
+}
+var_ia <- function(x) { n <- length(x); (sum(x^2) - n * mean(x)^2) / (n - 1) }
+cat(sprintf("EE bootstrap: %.2f | varianza de 1e9+{4,5,6}: %g\n",
+            boot_ia(), var_ia(c(1e9 + 4, 1e9 + 5, 1e9 + 6))))
+```
+
+```{r t4-todo, eval=FALSE}
+# TODO: corrige los dos errores.
+# 1. Haz el bootstrap reproducible: agrega set.seed y corre dos veces para comprobar que da lo mismo.
+# 2. Calcula la varianza con la funcion probada.
+set.seed(____)
+# ...vuelve a bootstrapear aqui y compara las dos corridas...
+cat("Varianza correcta:", var(c(1e9 + 4, 1e9 + 5, 1e9 + 6)), "\n")
+```
+
+**Auditoría (tu respuesta):** ¿Cuáles son los dos errores? ¿Por qué el bootstrap sin semilla no sirve, y por qué la fórmula de varianza da 0? ¿Cómo se corrige cada uno? _____
+
+# Cierre (tu respuesta)
+
+En una o dos frases: ¿cuáles son los tres candados de un número reproducible, y qué evita cada uno? _____

@@ -1,0 +1,113 @@
+---
+title: "Laboratorio Cuantitativo Aplicado · Sesión 9 · Solución (R)"
+subtitle: "Curso de IA Aplicada, INEGI 2026"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: tango
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Versión resuelta, para calificar. Integra la Sesión 7 (diseño, inferencia, agregación) y la 8 (reproducibilidad) sobre un microdato nuevo. Números verificados con R.
+
+```{r datos}
+library(survey)
+library(dplyr)
+library(estimatr)
+
+set.seed(909)   # Parte 5: el azar, fijo desde el inicio
+
+d <- read.csv("datos_encuesta_s9.csv")
+d$estrato <- factor(d$estrato, levels = c("Alta", "Media", "Baja"))
+dis <- svydesign(ids = ~upm, strata = ~estrato, weights = ~factor, data = d, nest = TRUE)
+cat(nrow(d), "hogares,", length(unique(d$upm)), "UPM\n")
+```
+
+# Parte 1 · Explorar y ponderar
+
+```{r p1}
+crudo <- mean(d$ingreso)
+pond  <- svymean(~ingreso, dis)
+cat(sprintf("Ingreso crudo: %s | ponderado: %s (EE %s) | subestima %.1f%%\n",
+            formatC(round(crudo), format = "d", big.mark = ","),
+            formatC(round(coef(pond)), format = "d", big.mark = ","),
+            formatC(round(SE(pond)), format = "d", big.mark = ","),
+            100 * (coef(pond) - crudo) / coef(pond)))
+```
+
+**Justificación.** El crudo (7,684) subestima el poblacional (8,759) en 12.3% porque la muestra sobre-representa Alta marginación (44% de la muestra), el estrato de menor ingreso. El factor de expansión devuelve a cada estrato su peso real.
+
+# Parte 2 · El efecto con el error estándar correcto
+
+```{r p2}
+m_iid <- lm(score ~ programa, data = d)
+m_clu <- lm_robust(score ~ programa, data = d, clusters = upm, se_type = "stata")
+cat(sprintf("Efecto: %.1f\n", coef(m_iid)["programa"]))
+cat(sprintf("EE clasico (IID): %.2f (p = %.3f)\n",
+            summary(m_iid)$coefficients["programa", "Std. Error"],
+            summary(m_iid)$coefficients["programa", "Pr(>|t|)"]))
+cat(sprintf("EE por conglomerado: %.2f (p = %.3f)\n",
+            m_clu$std.error["programa"], m_clu$p.value["programa"]))
+```
+
+**Justificación.** El punto no cambia (−3.7); el error clásico (1.02) ignora que los hogares se agrupan en UPM y subestima la incertidumbre casi a la mitad. El error por conglomerado (1.50) es el honesto. (El signo negativo, además, es engañoso: se corrige en la Parte 3.)
+
+# Parte 3 · Condicionar por estrato (Simpson)
+
+```{r p3}
+d %>% group_by(programa) %>% summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+d %>% group_by(estrato, programa) %>% summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+```
+
+**Justificación.** En agregado, los tratados puntúan por debajo (61.0 vs 64.8): el programa parece dañar. Al condicionar por estrato, sube alrededor de 10 puntos en los tres niveles (Alta +11, Media +10, Baja +9). Se invierte porque el programa se concentró en Alta marginación (299 de 438 tratados), el estrato de menor base. Condicionando, el programa ayuda.
+
+# Parte 4 · Auditar a la IA
+
+Este es el análisis que entregó un asistente sobre el microdato de hoy. Corre y se ve profesional, pero comete los tres errores de la Sesión 7.
+
+```{r p4-ia}
+# --- Analisis que entrego la IA (con sus tres errores) ---
+ia_ingreso <- mean(d$ingreso)                       # (1) promedio crudo, sin ponderar
+ia_modelo  <- lm(score ~ programa, data = d)        # (2) error estandar clasico
+ia_efecto  <- coef(ia_modelo)["programa"]           # (3) efecto agregado, sin estrato
+cat(sprintf("IA reporta: ingreso promedio %s; el programa cambia el score en %.1f (EE %.2f)\n",
+            formatC(round(ia_ingreso), format = "d", big.mark = ","),
+            ia_efecto, summary(ia_modelo)$coefficients["programa", "Std. Error"]))
+# Conclusion de la IA: "ingreso 7,684; el programa REDUCE el score 3.7 puntos, significativo."
+```
+
+```{r p4-auditoria}
+# --- La correccion: los tres arreglos ---
+cat(sprintf("1. Ingreso ponderado: %s  (no %s)\n",
+            formatC(round(coef(pond)), format = "d", big.mark = ","),
+            formatC(round(ia_ingreso), format = "d", big.mark = ",")))
+cat(sprintf("2. EE por conglomerado: %.2f  (no %.2f)\n",
+            m_clu$std.error["programa"], summary(ia_modelo)$coefficients["programa", "Std. Error"]))
+efecto_est <- d %>% group_by(estrato) %>%
+  summarise(dif = round(mean(score[programa == 1]) - mean(score[programa == 0]), 1), .groups = "drop")
+cat("3. Efecto por estrato (no el agregado):\n")
+print(as.data.frame(efecto_est))
+```
+
+**Auditoría.** La IA cometió los tres errores a la vez. **(1)** Promedió el ingreso sin ponderar: reportó 7,684 cuando el poblacional es 8,759. **(2)** Usó el error estándar clásico (1.02), que subestima la incertidumbre; el correcto por conglomerado es 1.50. **(3)** Leyó el efecto agregado (−3.7) y concluyó que el programa daña; al condicionar por estrato, el efecto es positivo en los tres niveles: el programa ayuda. Nada de esto lo señaló una advertencia: el código corrió sin error. Lo que le faltó a la IA no era estadística, sino saber que es una encuesta con diseño y que el programa se focalizó en Alta marginación.
+
+# Parte 5 · Reproducible
+
+```{r p5}
+cat("Insumo: datos_encuesta_s9.csv,", nrow(d), "filas x", ncol(d), "columnas\n")
+cat("Semilla fija: set.seed(909) al inicio\n")
+cat(R.version.string, "\n")
+# sessionInfo() en el documento tejido deja registro de las versiones.
+```
+
+**Justificación.** La semilla (`set.seed(909)`, arriba) hace reproducible cualquier remuestreo; el insumo está fijo y descrito; `sessionInfo()` registra las versiones. La prueba: reiniciar y correr todo de cero da estos mismos números. El entregable es este flujo, no el prompt que se le dio a la IA.
+
+# Cierre
+
+Un asistente escribe el análisis en segundos, pero aquí cometió los tres errores de diseño y ninguno se notó al correr. Ponderar, conglomerar, condicionar y fijar el azar y el entorno: eso lo decide y lo firma el analista. La IA es el copiloto; el criterio es humano.

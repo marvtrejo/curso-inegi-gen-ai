@@ -1,0 +1,105 @@
+---
+title: "Laboratorio Sesión 7 · Solución del instructor"
+subtitle: "Diseño muestral, inferencia y agregación · Curso de IA Aplicada, INEGI 2026"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: tango
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Versión resuelta, para calificar. Los números están verificados con R. El microdato `datos_encuesta_sintetica.csv` es ficticio, con forma de encuesta: estratos por marginación, unidades primarias de muestreo (UPM) y factores de expansión.
+
+```{r datos}
+library(survey)
+library(dplyr)
+library(estimatr)
+
+d <- read.csv("datos_encuesta_sintetica.csv")
+d$estrato <- factor(d$estrato, levels = c("Alta", "Media", "Baja"))
+
+# El diseño: conglomerados = UPM, estratos = estrato, pesos = factor de expansion
+dis <- svydesign(ids = ~upm, strata = ~estrato, weights = ~factor, data = d, nest = TRUE)
+cat(nrow(d), "hogares,", length(unique(d$upm)), "UPM\n")
+```
+
+# Tarea 1 · Ponderar el ingreso
+
+El promedio crudo trata a todos los hogares igual. El estimador de diseño usa el factor de expansión, y devuelve el ingreso poblacional, no el de la muestra.
+
+```{r tarea1}
+crudo <- mean(d$ingreso)                 # lo que daria mean() por default
+pond  <- svymean(~ingreso, dis)          # el estimador de diseño
+
+cat(sprintf("Ingreso crudo (sin ponderar): %s\n", formatC(round(crudo), format = "d", big.mark = ",")))
+cat(sprintf("Ingreso ponderado (poblacional): %s   (EE %s)\n",
+            formatC(round(coef(pond)), format = "d", big.mark = ","),
+            formatC(round(SE(pond)), format = "d", big.mark = ",")))
+cat(sprintf("El crudo subestima el poblacional en %.1f%%\n", 100 * (coef(pond) - crudo) / coef(pond)))
+
+# Por que: la muestra sobre-representa Alta marginacion
+d %>% group_by(estrato) %>%
+  summarise(ingreso_medio = round(mean(ingreso)),
+            pct_muestra = round(100 * n() / nrow(d)), .groups = "drop")
+```
+
+**Justificación.** El crudo (6,949) sale por debajo del poblacional (8,328) porque la muestra tiene 50% de hogares de Alta marginación cuando la población solo tiene 30%: ese estrato se sobre-muestreó por diseño para medirlo con precisión. Como Alta es el estrato de menor ingreso, promediar sin ponderar arrastra el número hacia abajo. El factor de expansión devuelve a cada estrato su peso poblacional, y por eso hay que ponderar.
+
+# Tarea 2 · El error estándar correcto
+
+El efecto estimado no cambia; cambia su margen. El error estándar clásico asume observaciones independientes; con hogares agrupados en UPM eso es falso, y el error por conglomerado es el honesto.
+
+```{r tarea2}
+m_iid <- lm(score ~ programa, data = d)                                  # EE clasico (IID)
+m_clu <- lm_robust(score ~ programa, data = d, clusters = upm, se_type = "stata")  # EE por conglomerado
+
+b       <- coef(m_iid)["programa"]
+se_iid  <- summary(m_iid)$coefficients["programa", "Std. Error"]
+p_iid   <- summary(m_iid)$coefficients["programa", "Pr(>|t|)"]
+se_clu  <- m_clu$std.error["programa"]
+p_clu   <- m_clu$p.value["programa"]
+
+cat(sprintf("Efecto del programa: %.1f puntos\n", b))
+cat(sprintf("EE clasico (IID):        %.2f   p = %.3f\n", se_iid, p_iid))
+cat(sprintf("EE por conglomerado UPM: %.2f   p = %.3f\n", se_clu, p_clu))
+```
+
+**Justificación.** El punto estimado es el mismo (−4.5). El error clásico (1.46, p = 0.002) declara el efecto claramente significativo; el error por conglomerado (2.19, p = 0.049) lo deja apenas al filo. El clásico subestima la incertidumbre en un tercio porque ignora que los hogares de una misma UPM están correlacionados y aportan menos información nueva. Con el error correcto, la conclusión pasa de firme a frágil. (El signo negativo, además, es engañoso: se corrige en la Tarea 3.)
+
+# Tarea 3 · Cazar a Simpson
+
+```{r tarea3}
+# Agregado: lo que reporta una comparacion cruda
+d %>% group_by(programa) %>%
+  summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+
+# Por estrato: condicionando por marginacion
+d %>% group_by(estrato, programa) %>%
+  summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+```
+
+**Justificación.** En agregado, los tratados (59.5) puntúan por debajo de los no tratados (63.9): el programa parece dañar. Pero al condicionar por estrato, el programa suma alrededor de 11 puntos en los tres niveles de marginación. La reversión ocurre porque el programa se concentró en Alta marginación (165 de 232 tratados), el estrato de menor base; ese peso hunde el promedio de los tratados. El agregado confunde el efecto del programa con la diferencia de base entre estratos, y por eso hay que condicionar por el confusor antes de concluir.
+
+# Tarea 4 · Audita a la IA (el demo en vivo, por escrito)
+
+Este es el ejercicio del demo en vivo, resuelto. A un asistente (DeepSeek-V3.2), pedido en código, se le preguntó si el programa sube o baja el `score`. Usó el diseño muestral correctamente y su código imprimió: «el programa se asocia con un score significativamente menor (p = 0.004)». La tarea es auditar esa conclusión.
+
+```{r tarea4}
+# El agregado que reporto la IA
+d %>% group_by(programa) %>% summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+
+# La auditoria: el mismo efecto, ahora por estrato
+d %>% group_by(estrato, programa) %>% summarise(score = round(mean(score), 1), n = n(), .groups = "drop")
+```
+
+**Auditoría.** La IA hizo bien lo mecánico: construyó el diseño muestral (ponderó y conglomeró) sin que se lo pidieran. Pero reportó el agregado, y ahí erró la conclusión: en total los tratados puntúan por debajo (59.5 contra 63.9), así que el programa parece dañar. Al condicionar por estrato, el programa suma alrededor de 11 puntos en los tres niveles. El agregado se invierte porque el programa se concentró en Alta marginación (165 de 232 tratados), el estrato de menor base, y ese peso hunde el promedio de los tratados. Lo que le faltó a la IA no era estadística, que la aplicó bien; era saber que el programa se focalizó en Alta marginación, un hecho del dominio que el modelo no tiene. La conclusión correcta: el programa ayuda, no daña.
+
+# Cierre
+
+Los tres errores viven en el mismo `lm(score ~ programa)` que un asistente escribe sin pensar: signo equivocado por agregación, precisión inflada por ignorar conglomerados, y escala equivocada si fuera una media sin ponderar. El estimador defendible pondera, estratifica y conglomera. La IA escribe el código; el diseño lo especifica quien conoce la encuesta.

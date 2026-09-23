@@ -34,6 +34,10 @@ Thumbs.db
 desktop.ini
 ~$*
 .~lock.*
+# Copias de trabajo que LibreOffice deja al guardar con otro nombre
+*_changed.pptx
+*_changed.docx
+*_changed.xlsx
 *.tmp
 *.bak
 

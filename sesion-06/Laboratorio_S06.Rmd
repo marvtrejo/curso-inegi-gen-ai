@@ -1,0 +1,132 @@
+---
+title: "Laboratorio Práctico 2 · Sesión 6"
+subtitle: "Versión en R (dplyr), para quien programa · Curso de IA Aplicada, INEGI 2026"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    highlight: tango
+lang: es
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Esta es la misma práctica del notebook de Python, escrita en **R con dplyr**. Reproduce exactamente los mismos números que la hoja `Laboratorio_S06.xlsx`; si algo no coincide, algo se calculó mal.
+
+La idea de fondo es la del pizarrón: precisión y recuperación cuando hay una respuesta correcta contra la cual comparar, y kappa cuando lo que se mide es el acuerdo entre dos codificadores.
+
+```{r librerias}
+library(dplyr)
+```
+
+## Parte 1 · Precisión y recuperación
+
+Le pedimos a la IA que extrajera los requisitos del Artículo 8 de las reglas de operación de un programa (ficticio). El artículo tiene **6 requisitos reales**. La IA devolvió 4 de ellos, **omitió 2** y **agregó 1** que no estaba.
+
+Cada elemento se describe con dos banderas: `es_requisito` vale 1 si de verdad aparece en el Artículo 8, y `la_ia_lo_incluyo` vale 1 si apareció en la salida de la IA. Con eso contamos aciertos y errores, y de ahí salen las tres medidas.
+
+```{r parte1}
+elementos <- data.frame(
+  texto = c(
+    "Residir en localidad de alta o muy alta marginacion",
+    "Ingreso del hogar bajo la linea de pobreza extrema",
+    "CURP de la persona titular",
+    "Comprobante de domicilio reciente",
+    "No recibir otro apoyo alimentario federal",  # la IA lo omitio  -> FN
+    "Persona titular mayor de edad, una por hogar",  # la IA lo omitio  -> FN
+    "Acta de nacimiento de la persona titular"),  # la IA lo invento -> FP
+  es_requisito     = c(1, 1, 1, 1, 1, 1, 0),
+  la_ia_lo_incluyo = c(1, 1, 1, 1, 0, 0, 1)
+)
+
+conteo <- elementos %>%
+  summarise(
+    VP = sum(es_requisito == 1 & la_ia_lo_incluyo == 1),
+    FP = sum(es_requisito == 0 & la_ia_lo_incluyo == 1),   # invento
+    FN = sum(es_requisito == 1 & la_ia_lo_incluyo == 0)    # omitio
+  )
+
+precision    <- conteo$VP / (conteo$VP + conteo$FP)
+recuperacion <- conteo$VP / (conteo$VP + conteo$FN)
+f1           <- 2 * precision * recuperacion / (precision + recuperacion)
+
+cat(sprintf("VP = %d    FP = %d (invento)    FN = %d (omitio)\n",
+            conteo$VP, conteo$FP, conteo$FN))
+cat(sprintf("Precision    = %.3f\n", precision))
+cat(sprintf("Recuperacion = %.3f\n", recuperacion))
+cat(sprintf("F1           = %.3f\n", f1))
+```
+
+La precisión sale de 0.80 (de 5 cosas que entregó, 4 eran correctas) y la recuperación de 0.667 (de 6 que había, encontró 4). El F1 las resume en 0.727. Una recuperación de 0.667 quiere decir que se escaparon 2 requisitos que sí estaban: en una evaluación que se firma, eso pesa aunque la precisión se vea alta.
+
+## Parte 2 · Acuerdo entre codificadores (kappa)
+
+Ahora la tarea no tiene una respuesta correcta: clasificar la polaridad de 20 comentarios ciudadanos (ficticios). Cada comentario lo etiquetó un **evaluador humano (A)** y la **IA (B)**. Medimos si coinciden más allá de lo que coincidirían por azar, con la kappa de Cohen. Para una matriz de 2 por 2, la aritmética de kappa se lee mejor en R base, así que aquí lo dejamos explícito.
+
+```{r parte2}
+comentarios <- data.frame(
+  texto = c(
+    "El apoyo me llego a tiempo este bimestre, sin problemas.",
+    "En la ventanilla me atendieron rapido y me explicaron todo.",
+    "Gracias al programa pude comprar la despensa del mes.",
+    "El tramite fue mas sencillo de lo que esperaba.",
+    "El modulo nuevo esta bien ubicado y comodo.",
+    "Me resolvieron la duda del pago en una sola visita.",
+    "Llevo tres meses esperando y el apoyo no cae.",
+    "Me mandaron de una ventanilla a otra sin resolver nada.",
+    "El sistema estaba caido y perdi toda la manana.",
+    "Nunca contestan el telefono del modulo.",
+    "Me pidieron un documento que no venia en la lista.",
+    "Cambiaron la fecha de pago y nadie aviso.",
+    "El personal fue grosero cuando pregunte por mi tramite.",
+    "Me rechazaron sin explicarme el motivo.",
+    "Ya no batalle nada esta vez, todo salio bien.",              # la IA leyo mal
+    "Sin quejas, el pago llego completo.",                        # negacion mal leida
+    "Que maravilla, solo tres visitas para que me digan que falta un papel.",  # sarcasmo
+    "Muy amables para decirme que regrese la proxima semana, otra vez.",       # sarcasmo cortes
+    "Excelente servicio, si es que algun dia contestan.",         # sarcasmo
+    "Rapidisimos, apenas dos horas formado bajo el sol."),        # sarcasmo
+  humano = c("Positiva","Positiva","Positiva","Positiva","Positiva","Positiva",
+             "Negativa","Negativa","Negativa","Negativa","Negativa","Negativa",
+             "Negativa","Negativa","Positiva","Positiva","Negativa","Negativa",
+             "Negativa","Negativa"),
+  ia     = c("Positiva","Positiva","Positiva","Positiva","Positiva","Positiva",
+             "Negativa","Negativa","Negativa","Negativa","Negativa","Negativa",
+             "Negativa","Negativa","Negativa","Negativa","Positiva","Positiva",
+             "Positiva","Positiva")
+)
+
+# La contingencia, en formato tidy (fila del humano contra columna de la IA)
+comentarios %>% count(humano, ia)
+
+etiquetas <- c("Positiva", "Negativa")
+cm <- table(humano = factor(comentarios$humano, levels = etiquetas),
+            IA     = factor(comentarios$ia,     levels = etiquetas))
+
+# Kappa de Cohen, a mano, para ver de donde sale
+n  <- nrow(comentarios)
+Po <- (cm["Positiva","Positiva"] + cm["Negativa","Negativa"]) / n
+Pe <- (sum(cm["Positiva", ]) / n) * (sum(cm[ , "Positiva"]) / n) +
+      (sum(cm["Negativa", ]) / n) * (sum(cm[ , "Negativa"]) / n)
+kappa <- (Po - Pe) / (1 - Pe)
+cat(sprintf("\nPo = %.3f   Pe = %.3f   Kappa = %.3f\n", Po, Pe, kappa))
+
+interpreta <- function(k) {
+  if (k < 0)     return("Pobre")
+  if (k <= 0.20) return("Leve")
+  if (k <= 0.40) return("Aceptable")
+  if (k <= 0.60) return("Moderado")
+  if (k <= 0.80) return("Sustancial")
+  return("Casi perfecto")
+}
+cat("Interpretacion (Landis y Koch):", interpreta(kappa), "\n")
+```
+
+El acuerdo bruto fue del 70%, pero la mitad era esperable por azar, así que kappa baja a 0.40: acuerdo apenas aceptable. Los cuatro desacuerdos no son ruido: son comentarios con sarcasmo o cortesía que la IA leyó al revés. Ahí está el límite de clasificar con IA, y por eso se mide el acuerdo antes de confiar en las categorías.
+
+## Cierre
+
+Todo esto fue sobre texto, y a mano. Calcular kappa sobre 20 comentarios toma minutos; sobre miles de registros es la misma línea de código que acaban de correr. Ahí empieza el análisis cuantitativo y los entornos reproducibles del Módulo III.
